@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Mailables\Content;
 
+
 class PostController extends Controller
 {
     private function fetchDataFromAPI()
@@ -30,11 +31,27 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
+    const API_URL =  "http://apihasin.test/api/posts/";
     public function index()
     {
+        $current_url = url()->current();
         $data = $this->fetchDataFromAPI();
         //Using Laravel's built-in collection methods (simpler)
-        $data = collect($data)->sortByDesc('created_at');
+        $data = collect($data);
+        $data = $data->jsonserialize();
+        foreach ($data['links'] as $key => $value) {
+            $parsedUrl = parse_url($value['url']);
+            $path = isset($parsedUrl['path']) ? $parsedUrl['path'] : '';
+            $query = isset($parsedUrl['query']) ? $parsedUrl['query'] : '';
+
+            $baseUrl = parse_url($current_url, PHP_URL_SCHEME) . '://' . parse_url($current_url, PHP_URL_HOST);
+
+            $data['links'][$key]['url2'] = $baseUrl . $path . '?' . $query;
+        }
+
+
+        print_r($data['links']);
+        exit();
         return view('posts', ['data' => $data]);
     }
 

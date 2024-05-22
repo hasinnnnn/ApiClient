@@ -86,7 +86,7 @@
                         </thead>
                         <tbody>
                             @php $i = 0; @endphp
-                            @foreach ($data as $post)
+                            @foreach ($data['data'] as $post)
                                 <tr>
                                     <td>{{ ++$i }}</td>
                                     <td>{{ $post['title'] }}</td>
@@ -108,6 +108,17 @@
                             @endforeach
                         </tbody>
                     </table>
+                    @if ($data['links'])
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                @foreach ($data['links'] as $item)
+                                    <li class="page-item {{ $item['active'] ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ $item['url2'] }}">{!! $item['label'] !!}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </nav>
+                    @endif
 
                 </div>
                 <!-- AKHIR DATA -->
